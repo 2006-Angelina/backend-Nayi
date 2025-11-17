@@ -34,11 +34,9 @@ def create_user(db: Session, user: UserCreate) -> Optional[bool]:
 
 def get_user_by_email_for_login(db: Session, email: str):
     try:
-        query = text("""
-                     SELECT id_usuario, nombre, documento, usuarios.id_rol,
-                     email, telefono, estado, nombre_rol, pass_hash 
+        query = text("""SELECT id_usuario, nombre, documento, usuarios.id_rol, email, telefono, usuarios.estado, nombre_rol, pass_hash
                      FROM usuarios
-                     JOIN  roles ON usuarios.id_rol = roles.id_rol
+                     JOIN roles ON usuarios.id_rol = roles.id_rol
                      WHERE email = :correo
                      """)
         result = db.execute(query, {"correo": email}).mappings().first()
@@ -46,6 +44,7 @@ def get_user_by_email_for_login(db: Session, email: str):
     except SQLAlchemyError as e:
         logger.error(f"Error al obtener usuario por email: {e}")
         raise Exception("Error de base de datos al obtener el usuario")
+
 
 
 def get_user_by_email(db: Session, email: str):
